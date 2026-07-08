@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="stylesheet.css">
+    <title>Visualizador - Registrar Equipamento</title>
+</head>
+<body>
+    <header>
+        <h1>Painel do Jogador</h1>
+        <p>Gerenciamento de Heróis e Equipamentos</p>
+    </header>
+    
+    <div class="container">
+        <div class="Menu-Lateral">
+            <h3>Menu</h3>
+            <button id="btn-lista-herois">Lista Heróis</button>
+            <button id="btn-add-heroi">Adicionar Novo Herói</button>
+            <button id="btn-lista-equipamento">Lista Equipamentos</button>
+            <button id="btn-add-equipamento">Registrar Equipamento</button>
+            <button id="btn-relatorio">Relatório de Poder</button>
+        </div>
+
+        <div class="menu-principal">
+            <form id="form-equipamento">
+                <table>            
+                    <tr>
+                        <th class="borda_5cima" colspan="5">Registrar Novo Equipamento</th>
+                    </tr>
+                    <tr>
+                        <th>Nome do Item</th>
+                        <th>Poder de Ataque</th>
+                        <th>Data da Forja</th>
+                        <th>Equipar em qual Herói?</th>
+                        <th>Ações</th>
+                    </tr>
+                    <tr>
+                        <td class="borda_5canto2">
+                            <input type="text" id="nome_equipamento" placeholder="Ex: Espada Longa" required>
+                        </td>
+                        <td>
+                            <input type="number" id="poder_ataque" placeholder="Ex: 150" required>
+                        </td>
+                        <td>
+                            <input type="date" id="data_forja" required>
+                        </td>
+                        <td>
+                            <select id="id_heroi_fk" required>
+                                <option value="">Selecione o Herói...</option>
+                                </select>
+                        </td>   
+                        <td class="borda_5canto1">
+                            <button type="submit">Salvar</button>
+                        </td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+    </div>
+<script src="script.js"></script>
+</body>
+</html>
