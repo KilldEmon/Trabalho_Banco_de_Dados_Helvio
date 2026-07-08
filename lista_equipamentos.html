@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="stylesheet.css">
+    <title>Visualizador - Lista Equipamentos</title>
+</head>
+<body>
+    <header>
+        <h1>Painel do Jogador</h1>
+        <p>Gerenciamento de Heróis e Equipamentos</p>
+    </header>
+
+    <div class="container">
+        <div class="Menu-Lateral">
+            <h3>Menu</h3>
+            <button id="btn-lista-herois">Lista Heróis</button>
+            <button id="btn-add-heroi">Adicionar Novo Herói</button>
+            <button id="btn-lista-equipamento">Lista Equipamentos</button>
+            <button id="btn-add-equipamento">Registrar Equipamento</button>
+            <button id="btn-relatorio">Relatório de Poder</button>
+        </div>
+
+        <div class="menu-principal">      
+            <table>
+                <thead>
+                    <tr>
+                        <th colspan="6">Arsenal Cadastrado</th>
+                    </tr>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nome do Item</th>
+                        <th>Poder de Ataque</th>
+                        <th>Data da Forja</th>
+                        <th>Herói Dono</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="tabela-equipamentos"></tbody>
+            </table>
+        </div>
+    </div>
+<script src="script.js"></script>
+</body>
+</html>

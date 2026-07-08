@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="stylesheet.css">
+    <title>Visualizador de Progressão - Adicionar Herói</title>
+</head>
+<body>
+    <header>
+        <h1>Painel do Jogador</h1>
+        <p>Gerenciamento de Heróis e Equipamentos</p>
+    </header>
+    
+    <div class="container">
+        <div class="Menu-Lateral">
+            <h3>Menu</h3>
+            <button id="btn-lista-herois">Lista Heróis</button>
+            <button id="btn-add-heroi">Adicionar Novo Herói</button>
+            <button id="btn-lista-equipamento">Lista Equipamentos</button>
+            <button id="btn-add-equipamento">Registrar Equipamento</button>
+            <button id="btn-relatorio">Relatório de Poder</button>
+        </div>
+
+        <div class="menu-principal">
+            <form id="form-heroi">
+                <table>            
+                    <tr>
+                        <th class="borda_5cima" colspan="5">Adicionar Novo Herói</th>
+                    </tr>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Classe</th>
+                        <th>Nível Inicial</th>
+                        <th>Data de Desbloqueio</th>
+                        <th>Ações</th>
+                    </tr>
+                    <tr>
+                        <td class="borda_5canto2">
+                            <input type="text" id="nome" placeholder="Nome do Herói" required>
+                        </td>
+                        <td>
+                            <select id="classe_fk" required>
+                                <option value="1">Mago</option>
+                                <option value="2">Guerreiro</option>
+                                <option value="3">Arqueiro</option>
+                                <option value="4">Tank</option>
+                                <option value="5">Necromancer</option>
+                            </select>
+                        </td>
+                        <td>
+                            <input type="number" id="nivel" placeholder="Ex: 1" required>
+                        </td>
+                        <td>
+                            <input type="date" id="desbloqueio" required>
+                        </td>   
+                        <td class="borda_5canto1">
+                            <button type="submit">Salvar</button>
+                        </td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+    </div> 
+    <script src="script.js"></script>
+</body>
+</html>
