@@ -26,9 +26,15 @@ document.addEventListener("DOMContentLoaded", function () {
     if (btnBuscar) {
         btnBuscar.addEventListener("click", async () => {
             const classeSelecionada = document.getElementById("filtro-classe").value;
+            const minNivel = document.getElementById("filtro-nivel-min").value;
+            const maxNivel = document.getElementById("filtro-nivel-max").value;
             const tabela = document.getElementById("tabela-herois");
             
-            const resposta = await fetch(`/herois/filtro/${classeSelecionada}`);
+            let url = `/herois/busca?classe=${classeSelecionada}`;
+            if (minNivel) url += `&min=${minNivel}`;
+            if (maxNivel) url += `&max=${maxNivel}`;
+
+            const resposta = await fetch(url);
             const heroisFiltrados = await resposta.json();
             
             tabela.innerHTML = "";
@@ -42,7 +48,9 @@ document.addEventListener("DOMContentLoaded", function () {
                         <td>${h.nivel_atual}</td>
                         <td>${dataFormatada}</td>
                         <td>
-                            <button class="texto-tabela texto-editar" onclick="editarNivel(${h.id_heroi})">Editar Nível</button>
+                            <button class="texto-tabela texto-editar" onclick="editarNome(${h.id_heroi})" style="background-color: #3498db;">Nome</button>
+                            <button class="texto-tabela texto-editar" onclick="editarClasse(${h.id_heroi})" style="background-color: #9b59b6;">Classe</button>
+                            <button class="texto-tabela texto-editar" onclick="editarNivel(${h.id_heroi})">Nível</button>
                             <button class="texto-tabela texto-deletar" onclick="excluirHeroi(${h.id_heroi})">Excluir</button>
                         </td>
                     </tr>
@@ -122,8 +130,9 @@ async function carregarHerois() {
                 <td>${h.nivel_atual}</td>
                 <td>${new Date(h.data_desbloqueio).toLocaleDateString('pt-BR')}</td>
                 <td>
-                    <button class="texto-tabela texto-editar" onclick="editarNivel(${h.id_heroi})">Editar Nível</button>
-                    <button class="texto-tabela texto-deletar" onclick="excluirHeroi(${h.id_heroi})">Excluir</button>
+                    <button class="texto-tabela texto-editar" onclick="editarNome(${h.id_heroi})" style="background-color: #3498db;">Nome</button>
+                    <button class="texto-tabela texto-editar" onclick="editarClasse(${h.id_heroi})" style="background-color: #9b59b6;">Classe</button>
+                    <button class="texto-tabela texto-editar" onclick="editarNivel(${h.id_heroi})">Nível</button>                    <button class="texto-tabela texto-deletar" onclick="excluirHeroi(${h.id_heroi})">Excluir</button>
                 </td>
             </tr>
         `;
@@ -206,6 +215,53 @@ async function editarNivel(id) {
         carregarHerois();
     }
 }
+async function editarNome(id) {
+    const novoNome = prompt("Digite o novo nome do Herói:");
+    if (novoNome) {
+        await fetch(`/herois/nome/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ nome: novoNome })
+        });
+        alert("Nome atualizado com sucesso!");
+        carregarHerois(); // Recarrega a tabela
+    }
+}
+
+async function editarClasse(id) {
+    const novaClasse = prompt("Digite o ID da nova classe:\n1 = Mago\n2 = Guerreiro\n3 = Arqueiro\n4 = Tank\n5 = Necromancer");
+    if (novaClasse >= 1 && novaClasse <= 5) {
+        await fetch(`/herois/classe/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id_classe_fk: novaClasse })
+        });
+        alert("Classe atualizada com sucesso!");
+        carregarHerois(); // Recarrega a tabela
+    } else if (novaClasse) {
+        alert("ID de classe inválido!");
+    }
+}
+
+app.put('/herois/nome/:id', (req, res) => {
+    const { nome } = req.body; 
+    const { id } = req.params;
+    db.query(`UPDATE herois SET nome = ? WHERE id_heroi = ?`, [nome, id], (err) => {
+        if (err) throw err; 
+        res.json({ message: 'Nome atualizado!' });
+    });
+});
+
+app.put('/herois/classe/:id', (req, res) => {
+    const { id_classe_fk } = req.body; 
+    const { id } = req.params;
+    db.query(`UPDATE herois SET id_classe_fk = ? WHERE id_heroi = ?`, [id_classe_fk, id], (err) => {
+        if (err) throw err; 
+        res.json({ message: 'Classe atualizada!' });
+    });
+});
+
+
 
 async function excluirHeroi(id) {
     if (confirm("Deseja realmente excluir este herói? Os equipamentos dele também serão perdidos!")) {
@@ -231,6 +287,6 @@ async function mostrarHeroisSemEquipamento() {
         alert("Todos os heróis possuem equipamentos!");
     } else {
         const nomes = herois.map(h => h.nome).join(", ");
-        alert(`Consulta NOT IN: Os heróis sem equipamento são: ${nomes}`);
+        alert(`Consulta: Os heróis sem equipamento são: ${nomes}`);
     }
 }

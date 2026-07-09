@@ -33,7 +33,15 @@
                     <option value="Tank">Tank</option>
                     <option value="Necromancer">Necromancer</option>
                 </select>
+
+                <p class="espaço-filtro" style="margin-left: 15px;">Nível:</p>
+                <input type="number" id="filtro-nivel-min" placeholder="Min" style="width: 70px;">
+                <span style="font-weight: bold; color: #475569; margin: 0 5px;">até</span>
+                <input type="number" id="filtro-nivel-max" placeholder="Máx" style="width: 70px;">
+
                 <button id="btn-buscar">Buscar</button>
+
+                <button type="button" onclick="mostrarHeroisSemEquipamento()" style="background-color: #8e44ad; margin-left: 15px; padding: 5px;;">Buscar Sem Arma</button>
             </div>
 
             <table>

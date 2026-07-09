@@ -26,6 +26,7 @@ app.get('/', (req, res) => {
     res.redirect('/lista_herois.html');
 });
 
+// ================= ROTAS DE HERÓIS =================
 app.get('/herois', (req, res) => {
     const sql = `SELECT h.id_heroi, h.nome, c.nome_classe, h.nivel_atual, h.data_desbloqueio 
                  FROM herois h INNER JOIN classes c ON h.id_classe_fk = c.id_classe`;
@@ -43,9 +44,30 @@ app.post('/herois', (req, res) => {
 });
 
 app.put('/herois/:id', (req, res) => {
-    const { nivel_atual } = req.body; const { id } = req.params;
+    const { nivel_atual } = req.body; 
+    const { id } = req.params;
     db.query(`UPDATE herois SET nivel_atual = ? WHERE id_heroi = ?`, [nivel_atual, id], (err) => {
         if (err) throw err; res.json({ message: 'Nível atualizado!' });
+    });
+});
+
+// Rota para editar apenas o NOME do herói (Corrigido para db.query)
+app.put('/herois/nome/:id', (req, res) => {
+    const { nome } = req.body; 
+    const { id } = req.params;
+    db.query(`UPDATE herois SET nome = ? WHERE id_heroi = ?`, [nome, id], (err) => {
+        if (err) throw err; 
+        res.json({ message: 'Nome atualizado!' });
+    });
+});
+
+// Rota para editar apenas a CLASSE do herói (Corrigido para db.query)
+app.put('/herois/classe/:id', (req, res) => {
+    const { id_classe_fk } = req.body; 
+    const { id } = req.params;
+    db.query(`UPDATE herois SET id_classe_fk = ? WHERE id_heroi = ?`, [id_classe_fk, id], (err) => {
+        if (err) throw err; 
+        res.json({ message: 'Classe atualizada!' });
     });
 });
 
@@ -55,6 +77,7 @@ app.delete('/herois/:id', (req, res) => {
     });
 });
 
+// ================= ROTAS DE EQUIPAMENTOS =================
 app.get('/equipamentos', (req, res) => {
     const sql = `SELECT e.id_equipamento, e.nome_equipamento, e.poder_ataque, e.data_forja, e.id_heroi_fk, h.nome AS nome_heroi 
                  FROM equipamentos e LEFT JOIN herois h ON e.id_heroi_fk = h.id_heroi`;
@@ -77,6 +100,7 @@ app.delete('/equipamentos/:id', (req, res) => {
     });
 });
 
+// ================= ROTAS AVANÇADAS =================
 app.get('/relatorio', (req, res) => {
     const sql = `SELECT h.nome, COUNT(e.id_equipamento) AS qtd_equipamentos, COALESCE(SUM(e.poder_ataque), 0) AS poder_total 
                  FROM herois h LEFT JOIN equipamentos e ON h.id_heroi = e.id_heroi_fk GROUP BY h.nome`;
@@ -85,14 +109,37 @@ app.get('/relatorio', (req, res) => {
     });
 });
 
-app.get('/herois/filtro/:classe', (req, res) => {
-    const { classe } = req.params;
-    let sql = `SELECT h.id_heroi, h.nome, c.nome_classe, h.nivel_atual, h.data_desbloqueio 
-               FROM herois h INNER JOIN classes c ON h.id_classe_fk = c.id_classe`;
-    if (classe !== 'Todos') sql += ` WHERE c.nome_classe = ?`;
+
+app.get('/herois/busca', (req, res) => {
+    const { classe, min, max } = req.query;
     
-    db.query(sql, classe !== 'Todos' ? [classe] : [], (err, results) => {
-        if (err) throw err; res.json(results);
+    let sql = `SELECT h.id_heroi, h.nome, c.nome_classe, h.nivel_atual, h.data_desbloqueio 
+               FROM herois h INNER JOIN classes c ON h.id_classe_fk = c.id_classe WHERE 1=1`;
+    let params = [];
+
+    if (classe && classe !== 'Todos') {
+        sql += ` AND c.nome_classe = ?`;
+        params.push(classe);
+    }
+    
+    if (min && max) {
+        sql += ` AND h.nivel_atual BETWEEN ? AND ?`;
+        params.push(min, max);
+    } 
+
+    else if (min) {
+        sql += ` AND h.nivel_atual >= ?`;
+        params.push(min);
+    } 
+
+    else if (max) {
+        sql += ` AND h.nivel_atual <= ?`;
+        params.push(max);
+    }
+    
+    db.query(sql, params, (err, results) => {
+        if (err) throw err; 
+        res.json(results);
     });
 });
 
